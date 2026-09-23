@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: shipping-api
+  jackson:
+    default-property-inclusion: non_null
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+shipping:
+  carrier-url: ${SHIPPING_CARRIER_URL:https://api.example-carrier.com/v1/quote}
+  carrier-api-key: ${SHIPPING_CARRIER_API_KEY:}
+  carrier-timeout-ms: 3000
+  default-cents-per-kg: 250
+  free-shipping-threshold-cents: 5000
+
+logging:
+  level:
+    com.marketly.shipping: INFO
+    org.springframework.web: WARN

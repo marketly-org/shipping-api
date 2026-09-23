@@ -25,7 +25,8 @@ public class ShippingService {
      */
     public QuoteResponse calculateQuote(QuoteRequest req) {
         Optional<QuoteResponse> carrierResponse = carrierClient.requestQuote(req);
-        QuoteResponse quote = carrierResponse.get();
+        QuoteResponse quote = carrierResponse.orElseThrow(() ->
+                new BadRequestException("Carrier does not serve the requested lane"));
         return applyMarketlyRules(req, quote);
     }
 

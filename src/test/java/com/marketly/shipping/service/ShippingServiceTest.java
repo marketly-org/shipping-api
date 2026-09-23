@@ -18,12 +18,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link ShippingService}.
- *
- * <p>NOTE: These tests cover the happy path only. The bug (calling
- * {@code Optional.get()} on an empty Optional) is a runtime behaviour
- * that only triggers when the carrier returns an empty Optional — e.g.
- * for an unsupported postal code. Sentinel should fix the bug and then
- * ADD a test for that case (see the disabled test at the bottom).
  */
 class ShippingServiceTest {
 
@@ -80,21 +74,4 @@ class ShippingServiceTest {
                 .hasMessageContaining("to_zip");
     }
 
-    /*
-     * DISABLED — this is the test Sentinel should ENABLE after fixing
-     * the bug. With the current (buggy) code, carrierClient returns an
-     * empty Optional and `carrierResponse.get()` throws
-     * NoSuchElementException (a 500), not a BadRequestException (400).
-     *
-     * @Test
-     * void calculateQuote_returns400WhenCarrierHasNoQuoteForLane() {
-     *     QuoteRequest req = new QuoteRequest("10001", "00000",
-     *             new BigDecimal("1.0"), 0L);
-     *     when(carrierClient.requestQuote(any())).thenReturn(Optional.empty());
-     *
-     *     assertThatThrownBy(() -> service.calculateQuote(req))
-     *             .isInstanceOf(BadRequestException.class)
-     *             .hasMessageContaining("carrier returned no quote");
-     * }
-     */
 }

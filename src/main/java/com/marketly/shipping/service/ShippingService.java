@@ -25,7 +25,7 @@ public class ShippingService {
      */
     public QuoteResponse calculateQuote(QuoteRequest req) {
         Optional<QuoteResponse> carrierResponse = carrierClient.requestQuote(req);
-        QuoteResponse quote = carrierResponse.get();
+        QuoteResponse quote = carrierResponse.orElseGet(() -> carrierClient.fallback(req));
         return applyMarketlyRules(req, quote);
     }
 

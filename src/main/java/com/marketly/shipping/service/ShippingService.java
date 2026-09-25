@@ -24,7 +24,8 @@ public class ShippingService {
      * Compute a shipping quote for the given request.
      */
     public QuoteResponse calculateQuote(QuoteRequest req) {
-        Optional<QuoteResponse> carrierResponse = carrierClient.requestQuote(req);
+        // Ensure we handle a possible null response from the carrier client safely
+        Optional<QuoteResponse> carrierResponse = Optional.ofNullable(carrierClient.requestQuote(req));
         QuoteResponse quote;
         if (carrierResponse.isPresent()) {
             quote = carrierResponse.get();

@@ -49,6 +49,10 @@ public class CarrierClient {
      *         does not serve the requested lane.
      */
     public Optional<QuoteResponse> requestQuote(QuoteRequest req) {
+        if (config.carrierApiKey() == null || config.carrierApiKey().isBlank()) {
+            log.warn("carrier API key not configured; skipping carrier quote");
+            return Optional.empty();
+        }
         try {
             CarrierQuoteResponse resp = restClient.post()
                     .header("Authorization", "Bearer " + config.carrierApiKey())

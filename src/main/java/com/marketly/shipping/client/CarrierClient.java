@@ -50,11 +50,13 @@ public class CarrierClient {
      */
     public Optional<QuoteResponse> requestQuote(QuoteRequest req) {
         try {
-            String apiKey = config.carrierApiKey();
-            if (apiKey == null || apiKey.isBlank()) {
+            Optional<String> apiKeyOpt = Optional.ofNullable(config.carrierApiKey())
+                    .filter(k -> !k.isBlank());
+            if (apiKeyOpt.isEmpty()) {
                 log.warn("carrier API key not configured");
                 return Optional.empty();
             }
+            String apiKey = apiKeyOpt.get();
             CarrierQuoteResponse resp = restClient.post()
                     .uri("/")
                     .header("Authorization", "Bearer " + apiKey)

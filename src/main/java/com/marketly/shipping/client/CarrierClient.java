@@ -50,8 +50,14 @@ public class CarrierClient {
      */
     public Optional<QuoteResponse> requestQuote(QuoteRequest req) {
         try {
+            String apiKey = config.carrierApiKey();
+            if (apiKey == null || apiKey.isBlank()) {
+                log.warn("carrier API key not configured");
+                return Optional.empty();
+            }
             CarrierQuoteResponse resp = restClient.post()
-                    .header("Authorization", "Bearer " + config.carrierApiKey())
+                    .uri("/")
+                    .header("Authorization", "Bearer " + apiKey)
                     .body(new CarrierQuoteRequest(req.fromZip(), req.toZip(),
                             req.weightKg().doubleValue(), req.declaredValueCents()))
                     .retrieve()

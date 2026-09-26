@@ -25,7 +25,7 @@ public class ShippingService {
      */
     public QuoteResponse calculateQuote(QuoteRequest req) {
         Optional<QuoteResponse> carrierResponse = carrierClient.requestQuote(req);
-        if (carrierResponse.isEmpty()) {
+        if (!carrierResponse.isPresent()) {
             // If the carrier doesn't provide a quote (e.g., unsupported lane, or temporary issue),
             // use the internal fallback quote mechanism.
             return applyMarketlyRules(req, carrierClient.fallback(req));

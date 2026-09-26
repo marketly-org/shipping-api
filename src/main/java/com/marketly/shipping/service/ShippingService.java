@@ -26,6 +26,12 @@ public class ShippingService {
     public QuoteResponse calculateQuote(QuoteRequest req) {
         Optional<QuoteResponse> carrierResponse = carrierClient.requestQuote(req);
         QuoteResponse quote = carrierResponse.orElseGet(() -> carrierClient.fallback(req));
+        // If the carrier API (or fallback) returns an effectively empty quote (e.g., no carrier info),
+        // further processing might lead to NoSuchElementException if internal lists are accessed.
+        // This check ensures a valid quote is present before applying Marketly rules.
+        if (quote.carrier() == null || quote.carrier().isEmpty()) {
+            throw new BadRequestException("No valid shipping quote could be obtained from carrier or fallback.");
+        }
         return applyMarketlyRules(req, quote);
     }
 

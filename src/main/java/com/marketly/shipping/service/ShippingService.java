@@ -24,10 +24,13 @@ public class ShippingService {
      * Compute a shipping quote for the given request.
      */
     public QuoteResponse calculateQuote(QuoteRequest req) {
-        Optional<QuoteResponse> carrierResponse = carrierClient.requestQuote(req);
-        QuoteResponse quote = carrierResponse.get();
-        return applyMarketlyRules(req, quote);
-    }
+            Optional<QuoteResponse> carrierResponse = carrierClient.requestQuote(req);
+            if (!carrierResponse.isPresent()) {
+                return applyMarketlyRules(req, carrierClient.fallback(req));
+            }
+            QuoteResponse quote = carrierResponse.get();
+            return applyMarketlyRules(req, quote);
+        }
 
 
     private QuoteResponse applyMarketlyRules(QuoteRequest req, QuoteResponse quote) {
